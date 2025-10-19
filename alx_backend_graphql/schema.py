@@ -8,3 +8,10 @@ schema = graphene.Schema(query=Query)
 class Query(CRMQuery, graphene.ObjectType):
     # Inherit CRM queries
     pass
+
+class Mutation(CRMMutation, graphene.ObjectType):
+    # Inherit CRM mutations
+    pass
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
