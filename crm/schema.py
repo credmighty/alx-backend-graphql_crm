@@ -8,6 +8,8 @@ from datetime import datetime
 from .models import Customer, Product, Order
 from .filters import CustomerFilter, ProductFilter, OrderFilter
 from products.models import Product  # adjust path if needed
+from orders.models import Order
+from customers.models import Customer
 
 
 # Object Types
@@ -432,3 +434,20 @@ class Mutation(graphene.ObjectType):
     update_low_stock_products = UpdateLowStockProducts.Field()
 
 schema = graphene.Schema(mutation=Mutation)
+
+
+class Query(graphene.ObjectType):
+    total_customers = graphene.Int()
+    total_orders = graphene.Int()
+    total_revenue = graphene.Float()
+
+    def resolve_total_customers(root, info):
+        return Customer.objects.count()
+
+    def resolve_total_orders(root, info):
+        return Order.objects.count()
+
+    def resolve_total_revenue(root, info):
+        return sum(order.total_amount for order in Order.objects.all())
+
+schema = graphene.Schema(query=Query)
