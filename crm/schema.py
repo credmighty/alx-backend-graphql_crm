@@ -10,6 +10,7 @@ from .filters import CustomerFilter, ProductFilter, OrderFilter
 from products.models import Product  # adjust path if needed
 from orders.models import Order
 from customers.models import Customer
+from crm.models import Product
 
 
 # Object Types
