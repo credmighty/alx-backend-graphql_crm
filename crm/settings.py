@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'graphene_django',  #new added
     'django_cron', #new added
+    'django_crontab', #new added
 ]
 
 MIDDLEWARE = [
@@ -132,4 +133,5 @@ GRAPHENE = {
 # configuring the Cron job
 CRONJOBS = [
     ('*/5 * * * *', 'crm.cron.log_crm_heartbeat'),
+    ('0 */12 * * *', 'crm.cron.update_low_stock'), # runs every 12hours
 ]

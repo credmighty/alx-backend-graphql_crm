@@ -1,3 +1,0 @@
-from crm.cron import log_crm_heartbeat
-log_crm_heartbeat()
-exit()

@@ -7,6 +7,7 @@ from decimal import Decimal
 from datetime import datetime
 from .models import Customer, Product, Order
 from .filters import CustomerFilter, ProductFilter, OrderFilter
+from products.models import Product  # adjust path if needed
 
 
 # Object Types
@@ -394,9 +395,40 @@ class Query(graphene.ObjectType):
         except Order.DoesNotExist:
             return None
 
+
+class ProductType(graphene.ObjectType):
+    id = graphene.Int()
+    name = graphene.String()
+    stock = graphene.Int()
+
+class UpdateLowStockProducts(graphene.Mutation):
+    success = graphene.Boolean()
+    message = graphene.String()
+    updated_products = graphene.List(ProductType)
+
+    def mutate(self, info):
+        low_stock_products = Product.objects.filter(stock__lt=10)
+        updated = []
+
+        for product in low_stock_products:
+            product.stock += 10
+            product.save()
+            updated.append(product)
+
+        return UpdateLowStockProducts(
+            success=True,
+            message=f"Updated {len(updated)} low-stock products.",
+            updated_products=updated
+        )
+
+
+
 # Mutation
 class Mutation(graphene.ObjectType):
     create_customer = CreateCustomer.Field()
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
     create_order = CreateOrder.Field()
+    update_low_stock_products = UpdateLowStockProducts.Field()
+
+schema = graphene.Schema(mutation=Mutation)
